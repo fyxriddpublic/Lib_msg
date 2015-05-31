@@ -1,0 +1,5 @@
+﻿name: Lib_msg
+main: lib.msg.api.MsgPlugin
+version: 1.0
+depend: [Lib_core, ProtocolLib, PacketWrapper]
+softdepend:
