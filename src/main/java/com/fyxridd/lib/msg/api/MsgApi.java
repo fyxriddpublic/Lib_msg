@@ -1,6 +1,6 @@
-package lib.msg.api;
+package com.fyxridd.lib.msg.api;
 
-import lib.msg.MsgMain;
+import com.fyxridd.lib.msg.MsgMain;
 import org.bukkit.entity.Player;
 
 public class MsgApi {

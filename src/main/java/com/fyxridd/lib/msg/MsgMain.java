@@ -1,4 +1,4 @@
-package lib.msg;
+package com.fyxridd.lib.msg;
 
 import com.comphenix.packetwrapper.WrapperPlayServerScoreboardDisplayObjective;
 import com.comphenix.packetwrapper.WrapperPlayServerScoreboardObjective;
@@ -8,11 +8,11 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
-import lib.core.api.ConfigApi;
-import lib.core.api.CoreApi;
-import lib.core.api.PerApi;
-import lib.core.api.event.ReloadConfigEvent;
-import lib.msg.api.MsgPlugin;
+import com.fyxridd.lib.core.api.ConfigApi;
+import com.fyxridd.lib.core.api.CoreApi;
+import com.fyxridd.lib.core.api.PerApi;
+import com.fyxridd.lib.core.api.event.ReloadConfigEvent;
+import com.fyxridd.lib.msg.api.MsgPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -100,7 +100,7 @@ public class MsgMain implements Listener {
     }
 
     /**
-     * @see lib.msg.api.MsgApi#setPrefix(org.bukkit.entity.Player, String)
+     * @see com.fyxridd.lib.msg.api.MsgApi#setPrefix(org.bukkit.entity.Player, String)
      */
     public static void setPrefix(Player p, String prefix) {
         if (p == null || !p.isOnline()) return;
@@ -116,7 +116,7 @@ public class MsgMain implements Listener {
     }
 
     /**
-     * @see lib.msg.api.MsgApi#getPrefix(String)
+     * @see com.fyxridd.lib.msg.api.MsgApi#getPrefix(String)
      */
     public static String getPrefix(String name) {
         if (name == null) return null;
@@ -130,7 +130,7 @@ public class MsgMain implements Listener {
     }
 
     /**
-     * @see lib.msg.api.MsgApi#setSuffix(org.bukkit.entity.Player, String)
+     * @see com.fyxridd.lib.msg.api.MsgApi#setSuffix(org.bukkit.entity.Player, String)
      */
     public static void setSuffix(Player p, String suffix) {
         if (p == null || !p.isOnline()) return;
@@ -146,7 +146,7 @@ public class MsgMain implements Listener {
     }
 
     /**
-     * @see lib.msg.api.MsgApi#getSuffix(String)
+     * @see com.fyxridd.lib.msg.api.MsgApi#getSuffix(String)
      */
     public static String getSuffix(String name) {
         if (name == null) return null;
@@ -160,7 +160,7 @@ public class MsgMain implements Listener {
     }
 
     /**
-     * @see lib.msg.api.MsgApi#setDisplaySideBar(org.bukkit.entity.Player, boolean)
+     * @see com.fyxridd.lib.msg.api.MsgApi#setDisplaySideBar(org.bukkit.entity.Player, boolean)
      */
     public static void setDisplaySideBar(Player p, boolean display) {
         if (p == null || !p.isOnline()) return;
@@ -182,7 +182,7 @@ public class MsgMain implements Listener {
     }
 
     /**
-     * @see lib.msg.api.MsgApi#isDisplaySideBar(org.bukkit.entity.Player)
+     * @see com.fyxridd.lib.msg.api.MsgApi#isDisplaySideBar(org.bukkit.entity.Player)
      */
     public static boolean isDisplaySideBar(Player p) {
         if (p == null) return false;
@@ -191,7 +191,7 @@ public class MsgMain implements Listener {
     }
 
     /**
-     * @see lib.msg.api.MsgApi#setSideShowTitle(org.bukkit.entity.Player, String)
+     * @see com.fyxridd.lib.msg.api.MsgApi#setSideShowTitle(org.bukkit.entity.Player, String)
      */
     public static void setSideShowTitle(Player p, String title) {
         if (p == null || !p.isOnline()) return;

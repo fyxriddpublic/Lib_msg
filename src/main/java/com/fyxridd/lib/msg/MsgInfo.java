@@ -1,4 +1,4 @@
-package lib.msg;
+package com.fyxridd.lib.msg;
 
 /**
  * 前后缀信息

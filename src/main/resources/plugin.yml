@@ -1,5 +1,5 @@
 ﻿name: Lib_msg
-main: lib.msg.api.MsgPlugin
-version: 1.0
+main: com.fyxridd.lib.msg.api.MsgPlugin
+version: 1.0.0
 depend: [Lib_core, ProtocolLib, PacketWrapper]
 softdepend:

@@ -1,8 +1,8 @@
-package lib.msg.api;
+package com.fyxridd.lib.msg.api;
 
-import lib.core.api.CoreApi;
-import lib.core.api.FormatApi;
-import lib.msg.MsgMain;
+import com.fyxridd.lib.core.api.CoreApi;
+import com.fyxridd.lib.core.api.FormatApi;
+import com.fyxridd.lib.msg.MsgMain;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;

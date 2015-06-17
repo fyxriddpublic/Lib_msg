@@ -1,4 +1,4 @@
-package lib.msg;
+package com.fyxridd.lib.msg;
 
 import java.util.List;
 
