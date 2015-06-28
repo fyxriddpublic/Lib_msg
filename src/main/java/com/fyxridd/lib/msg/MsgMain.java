@@ -441,7 +441,7 @@ public class MsgMain implements Listener {
     }
 
     private void initConfig() {
-        ConfigApi.register(MsgPlugin.file, MsgPlugin.dataPath, null, MsgPlugin.pn, null);
+        ConfigApi.register(MsgPlugin.file, MsgPlugin.dataPath, MsgPlugin.pn, null);
         ConfigApi.loadConfig(MsgPlugin.pn);
     }
 
