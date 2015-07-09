@@ -5,15 +5,6 @@ import org.bukkit.entity.Player;
 
 public class MsgApi {
     /**
-     * 开启/关闭玩家的侧边栏显示
-     * @param p 玩家,可为null(null或不在线时无效果)
-     * @param display 是否显示
-     */
-    public static void setDisplaySideBar(Player p, boolean display) {
-        MsgMain.setDisplaySideBar(p, display);
-    }
-
-    /**
      * 检测玩家是否显示侧边栏
      * @param p 玩家,可为null(null时返回false)
      * @return 是否显示侧边栏
@@ -23,23 +14,29 @@ public class MsgApi {
     }
 
     /**
-     * 设置玩家的侧边栏显示标题
+     * 开启/关闭玩家的侧边栏显示
      * @param p 玩家,可为null(null或不在线时无效果)
-     * @param title 显示标题,超过32字符会被截断,可为null
+     * @param display 是否显示
      */
-    public static void setSideShowTitle(Player p, String title) {
-        MsgMain.setSideShowTitle(p, title);
+    public static void setDisplaySideBar(Player p, boolean display) {
+        MsgMain.setDisplaySideBar(p, display);
     }
 
     /**
-     * 设置玩家的侧边栏显示行内容<br>
-     * 注意:行内容不能一样,否则将只显示一个
-     * @param p 玩家,可为null(null或不在线时无效果)
-     * @param index 行位置,从下往上排,0-(sideSize-1)
-     * @param show 行内容,超过14字符会被截断,可为null
+     * 注册侧边栏值获取器
+     * @param name 获取器名,唯一
+     * @param sideHandler 值获取器
      */
-    public static void setSideShowItem(Player p, int index, String show) {
-        MsgMain.setSideShowItem(p, index, show);
+    public static void registerSideHandler(String name, SideHandler sideHandler) {
+        MsgMain.registerSideHandler(name, sideHandler);
+    }
+
+    /**
+     * 更新玩家的侧边栏显示
+     * @param name 获取器名,唯一
+     */
+    public static void updateSideShow(Player p, String name) {
+        MsgMain.updateSideShow(p, name);
     }
 
     /**

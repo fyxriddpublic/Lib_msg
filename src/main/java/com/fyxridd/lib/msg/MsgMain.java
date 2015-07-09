@@ -13,6 +13,7 @@ import com.fyxridd.lib.core.api.CoreApi;
 import com.fyxridd.lib.core.api.PerApi;
 import com.fyxridd.lib.core.api.event.ReloadConfigEvent;
 import com.fyxridd.lib.msg.api.MsgPlugin;
+import com.fyxridd.lib.msg.api.SideHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -23,11 +24,19 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class MsgMain implements Listener {
+    private class SideConfig {
+        String name;
+        String data;
+
+        public SideConfig(String name, String data) {
+            this.name = name;
+            this.data = data;
+        }
+    }
+
     private static final String colors = "abcdef0123456789";
     //没有这权限:显示侧边栏 有这权限:不显示侧边栏
     private static String CHECK_PER = "lib.msg.checkShow";
@@ -35,6 +44,11 @@ public class MsgMain implements Listener {
 
     //配置
     private static int sideSize;
+    //行号(从0开始) 侧边栏获取器配置
+    private static HashMap<Integer, SideConfig> sides;
+
+    //缓存
+    private static InfoHandler infoHandler;
 
     //玩家名,前后缀信息
     private static HashMap<String, MsgInfo> msgInfoHash = new HashMap<String, MsgInfo>();
@@ -43,12 +57,16 @@ public class MsgMain implements Listener {
 
     //玩家名,侧边栏信息
     private static HashMap<String, SideInfo> showHash = new HashMap<String, SideInfo>();
+    //侧边栏获取器名 侧边栏获取器
+    private static HashMap<String, SideHandler> sideHandlers = new HashMap<String, SideHandler>();
 
     public MsgMain() {
         //初始化配置
         initConfig();
         //读取配置文件
         loadConfig();
+        //初始化
+        infoHandler = new InfoHandler();
         //注册事件
         Bukkit.getPluginManager().registerEvents(this, MsgPlugin.instance);
     }
@@ -97,6 +115,10 @@ public class MsgMain implements Listener {
         for (Player tar:Bukkit.getOnlinePlayers()) {
             if (!tar.getName().equals(p.getName())) send(tar, pc);
         }
+    }
+
+    public static InfoHandler getInfoHandler() {
+        return infoHandler;
     }
 
     /**
@@ -191,7 +213,9 @@ public class MsgMain implements Listener {
     }
 
     /**
-     * @see com.fyxridd.lib.msg.api.MsgApi#setSideShowTitle(org.bukkit.entity.Player, String)
+     * 设置玩家的侧边栏显示标题
+     * @param p 玩家,可为null(null或不在线时无效果)
+     * @param title 显示标题,超过32字符会被截断,可为null
      */
     public static void setSideShowTitle(Player p, String title) {
         if (p == null || !p.isOnline()) return;
@@ -234,6 +258,29 @@ public class MsgMain implements Listener {
         }
         //更新缓存
         sideInfo.getFrom().set(index, show);
+    }
+
+    /**
+     * @see com.fyxridd.lib.msg.api.MsgApi#registerSideHandler(String, com.fyxridd.lib.msg.api.SideHandler)
+     */
+    public static void registerSideHandler(String name, SideHandler sideHandler) {
+        sideHandlers.put(name, sideHandler);
+    }
+
+    /**
+     * @see com.fyxridd.lib.msg.api.MsgApi#updateSideShow(org.bukkit.entity.Player, String)
+     */
+    public static void updateSideShow(Player p, String name) {
+        SideHandler sideHandler = sideHandlers.get(name);
+        if (sideHandler != null) {
+            for (Map.Entry<Integer, SideConfig> entry:sides.entrySet()) {
+                if (entry.getValue().name.equals(name)) {
+                    String content = sideHandler.get(p, entry.getValue().data);
+                    if (entry.getKey() == -1) setSideShowTitle(p, content);
+                    else setSideShowItem(p, entry.getKey(), content);
+                }
+            }
+        }
     }
 
     /**
@@ -445,7 +492,7 @@ public class MsgMain implements Listener {
         ConfigApi.loadConfig(MsgPlugin.pn);
     }
 
-    private static void loadConfig() {
+    private void loadConfig() {
         YamlConfiguration config = ConfigApi.getConfig(MsgPlugin.pn);
 
         //sideSize
@@ -456,6 +503,19 @@ public class MsgMain implements Listener {
         }else if (sideSize > 16) {
             sideSize = 16;
             ConfigApi.log(MsgPlugin.pn, "side.size > 16");
+        }
+
+        //sides
+        sides = new HashMap<Integer, SideConfig>();
+        for (String s:config.getStringList("side.sides")) {
+            String[] args = s.split(" ");
+            int line = Integer.parseInt(args[0]);
+            String name = args[1];
+            String data;
+            if (args.length <= 2)  data = "";
+            else data = CoreApi.combine(args, " ", 2, args.length);
+
+            sides.put(line, new SideConfig(name, data));
         }
     }
 }
