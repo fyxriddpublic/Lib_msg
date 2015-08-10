@@ -48,17 +48,18 @@ public class MsgMain implements Listener {
     private static HashMap<Integer, SideConfig> sides;
 
     //缓存
+
     private static InfoHandler infoHandler;
 
     //玩家名,前后缀信息
-    private static HashMap<String, MsgInfo> msgInfoHash = new HashMap<String, MsgInfo>();
+    private static HashMap<String, MsgInfo> msgInfoHash = new HashMap<>();
     //玩家名,队伍的只包含自己的信息
-    private static HashMap<String, List<String>> playersHash = new HashMap<String, List<String>>();
+    private static HashMap<String, List<String>> playersHash = new HashMap<>();
 
     //玩家名,侧边栏信息
-    private static HashMap<String, SideInfo> showHash = new HashMap<String, SideInfo>();
+    private static HashMap<String, SideInfo> showHash = new HashMap<>();
     //侧边栏获取器名 侧边栏获取器
-    private static HashMap<String, SideHandler> sideHandlers = new HashMap<String, SideHandler>();
+    private static HashMap<String, SideHandler> sideHandlers = new HashMap<>();
 
     public MsgMain() {
         //初始化配置
@@ -84,7 +85,7 @@ public class MsgMain implements Listener {
         Player p = e.getPlayer();
         String name = p.getName();
         if (!playersHash.containsKey(name)) {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             list.add(name);
             playersHash.put(name, list);
         }
@@ -293,7 +294,7 @@ public class MsgMain implements Listener {
     private static PacketContainer getCreateTeamPacket(String name, String prefix, String suffix, List<String> players) {
         if (prefix == null) prefix = "";
         if (suffix == null) suffix = "";
-        if (players == null) players = new ArrayList<String>();
+        if (players == null) players = new ArrayList<>();
 
         WrapperPlayServerScoreboardTeam team = new WrapperPlayServerScoreboardTeam();
         team.setTeamName(name);
@@ -340,10 +341,10 @@ public class MsgMain implements Listener {
      * @param froms 发出者s,可为null
      */
     private static List<PacketContainer> getCreateSidePackets(String name, String show, List<String> froms) {
-        List<PacketContainer> result = new ArrayList<PacketContainer>();
+        List<PacketContainer> result = new ArrayList<>();
         if (show == null) show = "";
         show = show.substring(0, Math.min(32, show.length()));
-        if (froms == null) froms = new ArrayList<String>();
+        if (froms == null) froms = new ArrayList<>();
 
         //创建obj
 
@@ -468,7 +469,7 @@ public class MsgMain implements Listener {
     private static SideInfo getShowInfo(String name) {
         SideInfo sideInfo = showHash.get(name);
         if (sideInfo == null) {
-            List<String> froms = new ArrayList<String>();
+            List<String> froms = new ArrayList<>();
             for (int i=0;i<sideSize;i++) froms.add("");
 
             sideInfo = new SideInfo("", froms);
@@ -506,7 +507,7 @@ public class MsgMain implements Listener {
         }
 
         //sides
-        sides = new HashMap<Integer, SideConfig>();
+        sides = new HashMap<>();
         for (String s:config.getStringList("side.sides")) {
             String[] args = s.split(" ");
             int line = Integer.parseInt(args[0]);
