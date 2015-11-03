@@ -11,6 +11,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.fyxridd.lib.core.api.ConfigApi;
 import com.fyxridd.lib.core.api.CoreApi;
 import com.fyxridd.lib.core.api.PerApi;
+import com.fyxridd.lib.core.api.ShowApi;
 import com.fyxridd.lib.core.api.event.ReloadConfigEvent;
 import com.fyxridd.lib.msg.api.MsgPlugin;
 import com.fyxridd.lib.msg.api.SideHandler;
@@ -49,7 +50,9 @@ public class MsgMain implements Listener {
 
     //缓存
 
-    private static InfoHandler infoHandler;
+    public static InfoHandler infoHandler;
+    public static MsgManager msgManager;
+    public static MsgFunc msgFunc;
 
     //玩家名,前后缀信息
     private static HashMap<String, MsgInfo> msgInfoHash = new HashMap<>();
@@ -68,6 +71,8 @@ public class MsgMain implements Listener {
         loadConfig();
         //初始化
         infoHandler = new InfoHandler();
+        msgManager = new MsgManager();
+        msgFunc = new MsgFunc();
         //注册事件
         Bukkit.getPluginManager().registerEvents(this, MsgPlugin.instance);
     }
@@ -123,18 +128,18 @@ public class MsgMain implements Listener {
     }
 
     /**
-     * @see com.fyxridd.lib.msg.api.MsgApi#setPrefix(org.bukkit.entity.Player, String)
+     * 设置玩家名字前缀(头上的名字)
+     * @param name 玩家,不为null
+     * @param prefix 前缀,最长16字符,超过会被截断,null或空表示取消前缀
      */
-    public static void setPrefix(Player p, String prefix) {
-        if (p == null || !p.isOnline()) return;
-
+    public static void setPrefix(String name, String prefix) {
         if (prefix == null) prefix = "";
         if (prefix.length() > 16) prefix = prefix.substring(0, 16);
 
-        MsgInfo msgInfo = getMsgInfo(p.getName());
+        MsgInfo msgInfo = getMsgInfo(name);
         if (msgInfo.getPrefix() != null && msgInfo.getPrefix().equals(prefix)) return;//与原来一样
         msgInfo.setPrefix(prefix);
-        PacketContainer pc = getUpdateTeamInfoPacket(p.getName(), msgInfo.getPrefix(), msgInfo.getSuffix());
+        PacketContainer pc = getUpdateTeamInfoPacket(name, msgInfo.getPrefix(), msgInfo.getSuffix());
         for (Player tar:Bukkit.getOnlinePlayers()) send(tar, pc);
     }
 
@@ -153,18 +158,18 @@ public class MsgMain implements Listener {
     }
 
     /**
-     * @see com.fyxridd.lib.msg.api.MsgApi#setSuffix(org.bukkit.entity.Player, String)
+     * 设置玩家名字后缀(头上的名字)
+     * @param name 玩家名,不为null
+     * @param suffix 后缀,最长16字符,超过会被截断,null或空表示取消后缀
      */
-    public static void setSuffix(Player p, String suffix) {
-        if (p == null || !p.isOnline()) return;
-
+    public static void setSuffix(String name, String suffix) {
         if (suffix == null) suffix = "";
         if (suffix.length() > 16) suffix = suffix.substring(0, 16);
 
-        MsgInfo msgInfo = getMsgInfo(p.getName());
+        MsgInfo msgInfo = getMsgInfo(name);
         if (msgInfo.getSuffix() != null && msgInfo.getSuffix().equals(suffix)) return;//与原来一样
         msgInfo.setSuffix(suffix);
-        PacketContainer pc = getUpdateTeamInfoPacket(p.getName(), msgInfo.getPrefix(), msgInfo.getSuffix());
+        PacketContainer pc = getUpdateTeamInfoPacket(name, msgInfo.getPrefix(), msgInfo.getSuffix());
         for (Player tar:Bukkit.getOnlinePlayers()) send(tar, pc);
     }
 
@@ -518,5 +523,8 @@ public class MsgMain implements Listener {
 
             sides.put(line, new SideConfig(name, data));
         }
+
+        //重新注册界面
+        ShowApi.register(MsgPlugin.pn);
     }
 }

@@ -4,9 +4,6 @@ package com.fyxridd.lib.msg;
  * 前后缀信息
  */
 public class MsgInfo {
-    /**
-     * 不为null
-     */
     private String prefix;
     private String suffix;
     public MsgInfo(String prefix, String suffix) {

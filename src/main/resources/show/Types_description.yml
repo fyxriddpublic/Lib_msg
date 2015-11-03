@@ -1,0 +1,10 @@
+﻿列表:
+   类名: LevelInfo
+   属性:
+   方法:
+     type: 类型
+     name: 名称
+     prefix: 是否显示为前缀
+
+{prefix}: 当前显示的前缀
+{suffix}: 当前显示的后缀

@@ -1,0 +1,65 @@
+﻿pageMax: 1
+
+listSize: 6
+
+refresh: true
+
+page-1: "5 10 3 20 3 30 -2"
+
+show-3: ""
+
+show-5: "&7===================[&a<0><1>>&d{typeName}&7]=================="
+info-5:
+  0:
+    con: "y'{prefix}'=='true'"
+    text: "前缀"
+    color: "a"
+  1:
+    con: "y'{prefix}'=='false'"
+    text: "后缀"
+    color: "b"
+
+show-10: "        <0>        <1>"
+info-10:
+  0:
+    con: '{getSize} > 0'
+    text: '{0.toString()}'
+    color: 'e'
+    onClick: "cmd /f mg c {type} {0.convert()}"
+    onHover: "&7(点击选择显示)"
+  1:
+    con: '{getSize} > 1'
+    text: '{1.toString()}'
+    color: 'e'
+    onClick: "cmd /f mg c {type} {1.convert()}"
+    onHover: "&7(点击选择显示)"
+
+show-20: "        <0>        <1>"
+info-20:
+  0:
+    con: '{getSize} > 2'
+    text: '{2.toString()}'
+    color: 'e'
+    onClick: "cmd /f mg c {type} {2.convert()}"
+    onHover: "&7(点击选择显示)"
+  1:
+    con: '{getSize} > 3'
+    text: '{3.toString()}'
+    color: 'e'
+    onClick: "cmd /f mg c {type} {3.convert()}"
+    onHover: "&7(点击选择显示)"
+
+show-30: "        <0>        <1>"
+info-30:
+  0:
+    con: '{getSize} > 4'
+    text: '{4.toString()}'
+    color: 'e'
+    onClick: "cmd /f mg c {type} {4.convert()}"
+    onHover: "&7(点击选择显示)"
+  1:
+    con: '{getSize} > 5'
+    text: '{5.toString()}'
+    color: 'e'
+    onClick: "cmd /f mg c {type} {5.convert()}"
+    onHover: "&7(点击选择显示)"
