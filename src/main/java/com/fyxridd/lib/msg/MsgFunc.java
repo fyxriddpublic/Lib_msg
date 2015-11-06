@@ -138,8 +138,7 @@ public class MsgFunc implements FunctionInterface, ShowInterface {
             return;
         }
         //选择显示成功
-        if (isPrefix) MsgMain.setPrefix(p.getName(), level);
-        else MsgMain.setSuffix(p.getName(), level);
+        MsgMain.msgManager.setLevel(p.getName(), level, isPrefix);
         //提示
         if (isPrefix) ShowApi.tip(p, get(50, level), true);
         else ShowApi.tip(p, get(55, level), true);
@@ -151,8 +150,7 @@ public class MsgFunc implements FunctionInterface, ShowInterface {
         //速度检测
         if (!SpeedApi.checkShort(p, MsgPlugin.pn, SHORT_SEL, 3)) return;
         //取消显示成功
-        if (prefix) MsgMain.setPrefix(p.getName(), null);
-        else MsgMain.setSuffix(p.getName(), null);
+        MsgMain.msgManager.setLevel(p.getName(), null, prefix);
         //提示
         if (prefix) ShowApi.tip(p, get(60), true);
         else ShowApi.tip(p, get(65), true);

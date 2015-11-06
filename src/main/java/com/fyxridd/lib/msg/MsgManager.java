@@ -10,6 +10,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.*;
 
@@ -32,6 +34,9 @@ public class MsgManager implements Listener {
     //玩家名 称号类型 称号列表
     private HashMap<String, HashMap<String, LinkedHashSet<StringWrapper>>> levels = new HashMap<>();
 
+    //开启自动选择的玩家名列表(修正优化)
+    private HashSet<String> enableAutos = new HashSet<>();
+
     public MsgManager() {
         loadConfig();
         Bukkit.getPluginManager().registerEvents(this, MsgPlugin.instance);
@@ -40,6 +45,39 @@ public class MsgManager implements Listener {
     @EventHandler(priority= EventPriority.LOW)
     public void onReloadConfig(ReloadConfigEvent e) {
         if (e.getPlugin().equals(MsgPlugin.pn)) loadConfig();
+    }
+
+    @EventHandler(priority= EventPriority.MONITOR)
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        enableAutos.add(e.getPlayer().getName());
+        //检测(玩家没有显示称号,自动选择一个)
+        if (prefixAuto && isNull(MsgApi.getPrefix(e.getPlayer().getName()))) {
+            HashMap<String, LinkedHashSet<StringWrapper>> types = levels.get(e.getPlayer().getName());
+            if (types != null) {
+                for (Map.Entry<String, LinkedHashSet<StringWrapper>> entry:types.entrySet()) {
+                    if (isPrefix(entry.getKey()) && !entry.getValue().isEmpty()) {
+                        setLevel(e.getPlayer().getName(), entry.getValue().iterator().next().toString(), true);
+                        break;
+                    }
+                }
+            }
+        }
+        if (suffixAuto && isNull(MsgApi.getSuffix(e.getPlayer().getName()))) {
+            HashMap<String, LinkedHashSet<StringWrapper>> types = levels.get(e.getPlayer().getName());
+            if (types != null) {
+                for (Map.Entry<String, LinkedHashSet<StringWrapper>> entry:types.entrySet()) {
+                    if (!isPrefix(entry.getKey()) && !entry.getValue().isEmpty()) {
+                        setLevel(e.getPlayer().getName(), entry.getValue().iterator().next().toString(), false);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority= EventPriority.LOW)
+    public void onPlayerQuit(PlayerQuitEvent e) {
+        enableAutos.remove(e.getPlayer().getName());
     }
 
     public Collection<LevelInfo> getLevelInfos() {
@@ -119,13 +157,15 @@ public class MsgManager implements Listener {
             }
         }
         //再检测自动选择显示
-        if (isPrefix) {
-            if (prefixAuto && isNull(MsgApi.getPrefix(name))) {
-                setLevel(name, level, true);
-            }
-        }else {
-            if (suffixAuto && isNull(MsgApi.getSuffix(name))) {
-                setLevel(name, level, false);
+        if (enableAutos.contains(name)) {
+            if (isPrefix) {
+                if (prefixAuto && isNull(MsgApi.getPrefix(name))) {
+                    setLevel(name, level, true);
+                }
+            }else {
+                if (suffixAuto && isNull(MsgApi.getSuffix(name))) {
+                    setLevel(name, level, false);
+                }
             }
         }
     }
@@ -185,7 +225,7 @@ public class MsgManager implements Listener {
         }
     }
 
-    private void setLevel(String name, String level, boolean prefix) {
+    public void setLevel(String name, String level, boolean prefix) {
         if (prefix) {
             MsgMain.setPrefix(name, level);
             CoreApi.setInfo(name, PRE_SHOW_PREFIX, level);
