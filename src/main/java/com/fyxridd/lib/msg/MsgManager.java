@@ -49,25 +49,26 @@ public class MsgManager implements Listener {
 
     @EventHandler(priority= EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent e) {
-        enableAutos.add(e.getPlayer().getName());
+        String name = e.getPlayer().getName();
+        enableAutos.add(name);
         //检测(玩家没有显示称号,自动选择一个)
-        if (prefixAuto && isNull(MsgApi.getPrefix(e.getPlayer().getName()))) {
-            HashMap<String, LinkedHashSet<StringWrapper>> types = levels.get(e.getPlayer().getName());
+        if (prefixAuto && isNull(MsgApi.getPrefix(name))) {
+            HashMap<String, LinkedHashSet<StringWrapper>> types = levels.get(name);
             if (types != null) {
                 for (Map.Entry<String, LinkedHashSet<StringWrapper>> entry:types.entrySet()) {
                     if (isPrefix(entry.getKey()) && !entry.getValue().isEmpty()) {
-                        setLevel(e.getPlayer().getName(), entry.getValue().iterator().next().toString(), true);
+                        setLevel(name, entry.getValue().iterator().next().toString(), true, true);
                         break;
                     }
                 }
             }
         }
-        if (suffixAuto && isNull(MsgApi.getSuffix(e.getPlayer().getName()))) {
-            HashMap<String, LinkedHashSet<StringWrapper>> types = levels.get(e.getPlayer().getName());
+        if (suffixAuto && isNull(MsgApi.getSuffix(name))) {
+            HashMap<String, LinkedHashSet<StringWrapper>> types = levels.get(name);
             if (types != null) {
                 for (Map.Entry<String, LinkedHashSet<StringWrapper>> entry:types.entrySet()) {
                     if (!isPrefix(entry.getKey()) && !entry.getValue().isEmpty()) {
-                        setLevel(e.getPlayer().getName(), entry.getValue().iterator().next().toString(), false);
+                        setLevel(name, entry.getValue().iterator().next().toString(), false, true);
                         break;
                     }
                 }
@@ -147,12 +148,12 @@ public class MsgManager implements Listener {
         boolean isPrefix = isPrefix(type);
         if (isPrefix) {
             if (isNull(MsgApi.getPrefix(name)) && level.equals(CoreApi.getInfo(name, PRE_SHOW_PREFIX))) {
-                setLevel(name, level, true);
+                setLevel(name, level, true, true);
                 return;
             }
         }else {
             if (isNull(MsgApi.getSuffix(name)) && level.equals(CoreApi.getInfo(name, PRE_SHOW_SUFFIX))) {
-                setLevel(name, level, false);
+                setLevel(name, level, false, true);
                 return;
             }
         }
@@ -160,11 +161,11 @@ public class MsgManager implements Listener {
         if (enableAutos.contains(name)) {
             if (isPrefix) {
                 if (prefixAuto && isNull(MsgApi.getPrefix(name))) {
-                    setLevel(name, level, true);
+                    setLevel(name, level, true, true);
                 }
             }else {
                 if (suffixAuto && isNull(MsgApi.getSuffix(name))) {
-                    setLevel(name, level, false);
+                    setLevel(name, level, false, true);
                 }
             }
         }
@@ -191,9 +192,9 @@ public class MsgManager implements Listener {
                 //检测当前显示此前后缀,删除
                 boolean isPrefix = isPrefix(type);
                 if (isPrefix) {
-                    if (level.equals(MsgApi.getPrefix(name))) setLevel(name, null, true);
+                    if (level.equals(MsgApi.getPrefix(name))) setLevel(name, null, true, false);
                 }else {
-                    if (level.equals(MsgApi.getSuffix(name))) setLevel(name, null, false);
+                    if (level.equals(MsgApi.getSuffix(name))) setLevel(name, null, false, false);
                 }
             }
         }
@@ -225,13 +226,16 @@ public class MsgManager implements Listener {
         }
     }
 
-    public void setLevel(String name, String level, boolean prefix) {
+    /**
+     * @param changePre 是否改变先前显示的
+     */
+    public void setLevel(String name, String level, boolean prefix, boolean changePre) {
         if (prefix) {
             MsgMain.setPrefix(name, level);
-            CoreApi.setInfo(name, PRE_SHOW_PREFIX, level);
+            if (changePre) CoreApi.setInfo(name, PRE_SHOW_PREFIX, level);
         }else {
             MsgMain.setSuffix(name, level);
-            CoreApi.setInfo(name, PRE_SHOW_SUFFIX, level);
+            if (changePre) CoreApi.setInfo(name, PRE_SHOW_SUFFIX, level);
         }
     }
 
