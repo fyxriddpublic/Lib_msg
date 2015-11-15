@@ -21,7 +21,7 @@ per: "lib.msg.admin"          #管理权限
 
 #前缀配置
 prefix:
-  per: "lib.msg.prefix"      #选择前缀需要的权限
+  per: "lib.msg.prefix"      #手动选择前缀需要的权限
   auto: true                   #是否自动选择
 #后缀配置
 suffix:

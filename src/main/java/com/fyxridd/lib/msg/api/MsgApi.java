@@ -5,61 +5,42 @@ import org.bukkit.entity.Player;
 
 public class MsgApi {
     /**
-     * 注册称号类型
-     * @param type 称号类型
-     * @param name 称号名称(显示用)
+     * 注册前后缀
+     * @param type 类型名
      * @param prefix true表示显示在前缀;false表示显示在后缀
      */
-    public static void registerLevel(String type, String name, boolean prefix) {
-        MsgMain.msgManager.registerLevel(type, name, prefix);
+    public static void registerLevel(String type, boolean prefix) {
+        MsgMain.msgManager.registerLevel(type, prefix);
     }
 
     /**
-     * 给玩家添加称号
+     * 获取玩家的前后缀
      * @param name 玩家名
-     * @param type 称号类型
-     * @param level 称号,最长16字符,超过会被截断
+     * @param type 类型名
+     * @return 前后缀,可为null
      */
-    public static void addLevel(String name, String type, String level) {
-        MsgMain.msgManager.addLevel(name, type, level);
+    public static String getLevel(String name, String type) {
+        return MsgMain.msgManager.getLevel(name, type);
     }
 
     /**
-     * 检测玩家是否拥有称号
+     * 设置玩家前后缀
+     * @param name 玩家名,不为null
+     * @param type 类型名,不为null
+     * @param level 前后缀,最长16字符,超过会被截断,null或""表示删除
+     */
+    public static void setLevel(String name, String type, String level) {
+        MsgMain.msgManager.setLevel(name, type, level);
+    }
+
+    /**
+     * 获取玩家当前显示的类型
      * @param name 玩家名
-     * @param type 称号类型
-     * @param level 称号
-     * @return 是否拥有称号
+     * @param prefix 是否前缀
+     * @return 当前显示的类型,可为null
      */
-    public static boolean hasLevel(String name, String type, String level) {
-        return MsgMain.msgManager.hasLevel(name, type, level);
-    }
-
-    /**
-     * 给玩家删除称号
-     * @param name 玩家名
-     * @param type 称号类型
-     * @param level 称号,最长16字符,超过会被截断
-     */
-    public static void removeLevel(String name, String type, String level) {
-        MsgMain.msgManager.removeLevel(name, type, level);
-    }
-
-    /**
-     * 清空玩家的所有称号
-     * @param name 玩家
-     */
-    public static void clearLevels(String name) {
-        MsgMain.msgManager.clearLevels(name);
-    }
-
-    /**
-     * 清空玩家指定类型的所有称号
-     * @param name 玩家
-     * @param type 称号类型
-     */
-    public static void clearLevels(String name, String type) {
-        MsgMain.msgManager.clearLevels(name, type);
+    public static String getNowType(String name, boolean prefix) {
+        return MsgMain.msgManager.getNowType(name, prefix);
     }
 
     /**
