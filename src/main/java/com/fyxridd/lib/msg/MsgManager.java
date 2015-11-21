@@ -3,7 +3,6 @@ package com.fyxridd.lib.msg;
 import com.fyxridd.lib.core.api.ConfigApi;
 import com.fyxridd.lib.core.api.CoreApi;
 import com.fyxridd.lib.core.api.event.ReloadConfigEvent;
-import com.fyxridd.lib.msg.api.MsgApi;
 import com.fyxridd.lib.msg.api.MsgPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -50,33 +49,45 @@ public class MsgManager implements Listener {
         if (e.getPlugin().equals(MsgPlugin.pn)) loadConfig();
     }
 
+
+    @EventHandler(priority= EventPriority.LOWEST)
+    public void onPlayerJoinLowest(PlayerJoinEvent e) {
+        if (!prefixLevels.containsKey(e.getPlayer().getName())) prefixLevels.put(e.getPlayer().getName(), new HashMap<String, LevelData>());
+        if (!suffixLevels.containsKey(e.getPlayer().getName())) suffixLevels.put(e.getPlayer().getName(), new HashMap<String, LevelData>());
+    }
+
     @EventHandler(priority= EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent e) {
         String name = e.getPlayer().getName();
         enableAutos.add(name);
-        //前缀为空
-        if (isNull(MsgApi.getPrefix(name))) {
-            //检测先前显示的
+        //前缀
+        {
             HashMap<String, LevelData> datas = prefixLevels.get(name);
             if (datas != null) {
+                //检测先前显示的
                 LevelData levelData = datas.get(CoreApi.getInfo(name, PRE_SHOW_PREFIX));
                 if (levelData != null && isPrefix(levelData.getType())) {
                     setLevel(name, levelData.getType(), levelData.getLevel(), true, true);
                 }else {
+                    //删除当前显示
+                    setLevel(name, null, null, true, true);
                     //检测自动选择一个
                     checkAutoSel(name, true);
                 }
             }
         }
-        //后缀为空
-        if (isNull(MsgApi.getSuffix(name))) {
-            //检测先前显示的
+
+        //后缀
+        {
             HashMap<String, LevelData> datas = suffixLevels.get(name);
             if (datas != null) {
+                //检测先前显示的
                 LevelData levelData = datas.get(CoreApi.getInfo(name, PRE_SHOW_SUFFIX));
                 if (levelData != null && !isPrefix(levelData.getType())) {
                     setLevel(name, levelData.getType(), levelData.getLevel(), false, true);
                 }else {
+                    //删除当前显示
+                    setLevel(name, null, null, false, true);
                     //检测自动选择一个
                     checkAutoSel(name, false);
                 }
@@ -180,7 +191,7 @@ public class MsgManager implements Listener {
      * @param prefix 是否前缀
      */
     public void checkAutoSel(String name, boolean prefix) {
-        if ((prefix && prefixAuto && isNull(MsgApi.getPrefix(name))) || (!prefix && suffixAuto && isNull(MsgApi.getSuffix(name)))) {
+        if ((prefix && prefixAuto && getNowType(name, true) == null) || (!prefix && suffixAuto && getNowType(name, false) == null)) {
             HashMap<String, LevelData> datas = prefix?prefixLevels.get(name):suffixLevels.get(name);
             if (datas != null) {
                 for (LevelData levelData:datas.values()) {
@@ -208,10 +219,6 @@ public class MsgManager implements Listener {
             MsgMain.setSuffix(name, level);
             if (changePre) CoreApi.setInfo(name, PRE_SHOW_SUFFIX, type);
         }
-    }
-
-    private boolean isNull(String s) {
-        return s == null || s.isEmpty();
     }
 
     private void loadConfig() {
